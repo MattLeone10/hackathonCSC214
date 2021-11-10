@@ -11,18 +11,34 @@ import GameplayKit
 class GameScene: SKScene {
     
     var theBird:SKSpriteNode = SKSpriteNode()
+    var theCoin:SKSpriteNode = SKSpriteNode()
     
     override func didMove(to view: SKView) {
+        super.didMove(to: view)
         if let someBird:SKSpriteNode = self.childNode(withName: "BlueBird") as? SKSpriteNode{
             theBird = someBird
-            theBird.physicsBody?.isDynamic = false
-        } else{
-            print("assigning bird failed")
         }
+        if let someCoin:SKSpriteNode = self.childNode(withName: "Coin") as? SKSpriteNode{
+            theCoin = someCoin
+        }
+    }
+    func checkCollisions(objA : SKSpriteNode, objB : SKSpriteNode){
         
+
+        
+        //print("coinX + \(coinX)")
+        //print("coinY + \(coinY)")
+
+
+        if ((objA.frame.origin.x) >= objB.frame.origin.x - (objB.frame.width*0.5) && objA.frame.origin.x <= (objB.frame.origin.x + objB.frame.width) + (objB.frame.width*0.5)) {
+            if ((objA.frame.origin.y) >= objB.frame.origin.y - (objB.frame.origin.y*0.5) && objA.frame.origin.y <= objB.frame.origin.y + 1.5*objB.frame.height) {
+                print("Collision")
+            }
+        }
     }
     override func update(_ currentTime: TimeInterval) {
         // Called before each frame is rendered
+        self.checkCollisions(objA: theBird, objB: theCoin)
     }
     func moveDown(){
         let moveAction:SKAction = SKAction.moveBy(x: 0, y: -50, duration: 1)
@@ -43,8 +59,8 @@ class GameScene: SKScene {
     
     
     func touchDown(atPoint pos : CGPoint) {
-        let birdX = theBird.position.x
-        let birdY = theBird.position.y
+        let birdX = theBird.frame.origin.x
+        let birdY = theBird.frame.origin.y
         if ( pos.y > birdY){
             moveUp()
         } else {
