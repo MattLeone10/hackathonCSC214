@@ -22,23 +22,21 @@ class GameScene: SKScene {
             theCoin = someCoin
         }
     }
-    func checkCollisions(objA : SKSpriteNode, objB : SKSpriteNode){
-        
-
-        
-        //print("coinX + \(coinX)")
-        //print("coinY + \(coinY)")
-
-
+    func checkCollisions(objA : SKSpriteNode, objB : SKSpriteNode)->Bool{
         if ((objA.frame.origin.x) >= objB.frame.origin.x - (objB.frame.width*0.5) && objA.frame.origin.x <= (objB.frame.origin.x + objB.frame.width) + (objB.frame.width*0.5)) {
             if ((objA.frame.origin.y) >= objB.frame.origin.y - (objB.frame.origin.y*0.5) && objA.frame.origin.y <= objB.frame.origin.y + 1.5*objB.frame.height) {
-                print("Collision")
+                return true
             }
         }
+        return false
     }
     override func update(_ currentTime: TimeInterval) {
         // Called before each frame is rendered
-        self.checkCollisions(objA: theBird, objB: theCoin)
+        if (self.checkCollisions(objA: theBird, objB: theCoin)){
+            let hitAnimation:SKAction = SKAction(named: "HitBird")!
+            theBird.run(hitAnimation)
+            theCoin.isHidden = true
+        }
     }
     func moveDown(){
         let moveAction:SKAction = SKAction.moveBy(x: 0, y: -50, duration: 1)
