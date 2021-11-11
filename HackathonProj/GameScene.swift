@@ -12,7 +12,15 @@ class GameScene: SKScene {
     
     var theBird : SKSpriteNode = SKSpriteNode()
     var theCoin : SKSpriteNode = SKSpriteNode()
-    
+    var winTag : SKLabelNode = SKLabelNode()
+    var loseTag : SKLabelNode = SKLabelNode()
+    var wall1 : SKSpriteNode = SKSpriteNode()
+    var wall2 : SKSpriteNode = SKSpriteNode()
+    var wall3 : SKSpriteNode = SKSpriteNode()
+    var wall4 : SKSpriteNode = SKSpriteNode()
+    var wall5 : SKSpriteNode = SKSpriteNode()
+    var wall6 : SKSpriteNode = SKSpriteNode()
+    var wall7 : SKSpriteNode = SKSpriteNode()
     var wallAssetArray : [SKSpriteNode] = []
     
     var birdInitX : CGFloat = 0
@@ -30,6 +38,46 @@ class GameScene: SKScene {
         if let someCoin:SKSpriteNode = self.childNode(withName: "Coin") as? SKSpriteNode{
             theCoin = someCoin
         }
+        if let someWall:SKSpriteNode = self.childNode(withName: "wall1") as? SKSpriteNode{
+            wall1 = someWall
+            wallAssetArray.append(wall1)
+        }
+        if let someWall:SKSpriteNode = self.childNode(withName: "wall2") as? SKSpriteNode{
+            wall2 = someWall
+            wallAssetArray.append(wall2)
+        }
+        if let someWall:SKSpriteNode = self.childNode(withName: "wall3") as? SKSpriteNode{
+            wall3 = someWall
+            wallAssetArray.append(wall3)
+        }
+        if let someWall:SKSpriteNode = self.childNode(withName: "wall4") as? SKSpriteNode{
+            wall4 = someWall
+            wallAssetArray.append(wall4)
+        }
+        if let someWall:SKSpriteNode = self.childNode(withName: "wall5") as? SKSpriteNode{
+            wall5 = someWall
+            wallAssetArray.append(wall5)
+        }
+        if let someWall:SKSpriteNode = self.childNode(withName: "wall6") as? SKSpriteNode{
+            wall6 = someWall
+            wallAssetArray.append(wall6)
+        }
+        if let someWall:SKSpriteNode = self.childNode(withName: "wall7") as? SKSpriteNode{
+            wall7 = someWall
+            wallAssetArray.append(wall7)
+        }
+        if let someTag:SKLabelNode = self.childNode(withName: "winTag") as? SKLabelNode{
+            winTag = someTag
+            winTag.isHidden = true
+            winTag.text = "You've won the game!"
+            winTag.fontSize = 60
+        }
+        if let someTag:SKLabelNode = self.childNode(withName: "loseTag") as? SKLabelNode{
+            loseTag = someTag
+            loseTag.isHidden = true
+            loseTag.text = "You've lost the game!"
+            loseTag.fontSize = 60
+        }
     }
     
     func resetGame() {
@@ -42,15 +90,14 @@ class GameScene: SKScene {
         self.theCoin.position.y = self.coinInitY
         
         self.theCoin.isHidden = false
-        
+        self.winTag.isHidden = true
+        self.loseTag.isHidden = true
       
     }
     
     func checkCollisions(objA : SKSpriteNode, objB : SKSpriteNode) -> Bool {
-        if ((objA.frame.origin.x) >= objB.frame.origin.x - (objB.frame.width*0.5) && objA.frame.origin.x <= (objB.frame.origin.x + objB.frame.width) + (objB.frame.width*0.5)) {
-            if ((objA.frame.origin.y) >= objB.frame.origin.y - (objB.frame.origin.y*0.5) && objA.frame.origin.y <= objB.frame.origin.y + 1.5*objB.frame.height) {
-                return true
-            }
+        if (objB.contains(objA.position)){
+            return true
         }
         return false
     }
@@ -62,18 +109,26 @@ class GameScene: SKScene {
         
         if (self.checkCollisions(objA: theBird, objB: theCoin)){
             let hitAnimation : SKAction = SKAction(named: "HitBird")!
-            
+            let wait:SKAction = SKAction.wait(forDuration: 3)
            // let sequence : SKAction = SKAction.sequence ([hitAnimation, self.resetGame()])
-            
             theCoin.isHidden = true
-            
-            theBird.run(hitAnimation, completion: {
+            winTag.isHidden = false
+            theBird.run(hitAnimation)
+            theBird.run(wait, completion: {
                 self.resetGame()
             })
-            
-            
-            
            // resetGame()
+        }
+        for wall in wallAssetArray{
+            if (self.checkCollisions(objA: theBird, objB: wall)){
+                let loseBird : SKAction = SKAction(named: "loseBird")!
+                loseTag.isHidden = false
+                theBird.run(loseBird)
+                let wait:SKAction = SKAction.wait(forDuration: 1)
+                theBird.run(wait, completion: {
+                    self.resetGame()
+                })
+            }
         }
         
         if (!self.didLoad) {
