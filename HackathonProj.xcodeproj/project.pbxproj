@@ -15,6 +15,10 @@
 		B480D9EF273C66770052F544 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = B480D9ED273C66770052F544 /* Main.storyboard */; };
 		B480D9F1273C66780052F544 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B480D9F0273C66780052F544 /* Assets.xcassets */; };
 		B800735D273DA950004D8FE0 /* woohoo.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = B800735C273DA950004D8FE0 /* woohoo.mp3 */; };
+		B86CE241273DC85E008AF9AA /* yay.wav in Resources */ = {isa = PBXBuildFile; fileRef = B86CE240273DC85E008AF9AA /* yay.wav */; };
+		B86CE243273DC9E4008AF9AA /* bg.wav in Resources */ = {isa = PBXBuildFile; fileRef = B86CE242273DC9E4008AF9AA /* bg.wav */; };
+		B86CE245273DCB79008AF9AA /* oof.wav in Resources */ = {isa = PBXBuildFile; fileRef = B86CE244273DCB79008AF9AA /* oof.wav */; };
+		B86CE247273DCCA1008AF9AA /* oofshort.wav in Resources */ = {isa = PBXBuildFile; fileRef = B86CE246273DCCA1008AF9AA /* oofshort.wav */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -28,6 +32,10 @@
 		B480D9F0273C66780052F544 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		B480D9F2273C66780052F544 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		B800735C273DA950004D8FE0 /* woohoo.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = woohoo.mp3; sourceTree = "<group>"; };
+		B86CE240273DC85E008AF9AA /* yay.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = yay.wav; sourceTree = "<group>"; };
+		B86CE242273DC9E4008AF9AA /* bg.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = bg.wav; sourceTree = "<group>"; };
+		B86CE244273DCB79008AF9AA /* oof.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = oof.wav; sourceTree = "<group>"; };
+		B86CE246273DCCA1008AF9AA /* oofshort.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = oofshort.wav; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -60,6 +68,10 @@
 		B480D9E2273C66770052F544 /* HackathonProj */ = {
 			isa = PBXGroup;
 			children = (
+				B86CE246273DCCA1008AF9AA /* oofshort.wav */,
+				B86CE244273DCB79008AF9AA /* oof.wav */,
+				B86CE242273DC9E4008AF9AA /* bg.wav */,
+				B86CE240273DC85E008AF9AA /* yay.wav */,
 				B800735C273DA950004D8FE0 /* woohoo.mp3 */,
 				B480D9E3273C66770052F544 /* AppDelegate.swift */,
 				B480D9E5273C66770052F544 /* GameScene.sks */,
@@ -130,11 +142,15 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B86CE241273DC85E008AF9AA /* yay.wav in Resources */,
 				B480D9EF273C66770052F544 /* Main.storyboard in Resources */,
+				B86CE243273DC9E4008AF9AA /* bg.wav in Resources */,
 				B480D9E6273C66770052F544 /* GameScene.sks in Resources */,
 				B480D9F1273C66780052F544 /* Assets.xcassets in Resources */,
 				B480D9E8273C66770052F544 /* Actions.sks in Resources */,
 				B800735D273DA950004D8FE0 /* woohoo.mp3 in Resources */,
+				B86CE247273DCCA1008AF9AA /* oofshort.wav in Resources */,
+				B86CE245273DCB79008AF9AA /* oof.wav in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

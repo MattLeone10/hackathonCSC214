@@ -34,6 +34,8 @@ class GameScene: SKScene {
     var didLoad : Bool = false
     var didPlayAudio : Bool = false
     
+    var soundIsPlaying : Bool = false
+    
     override func didMove(to view: SKView) {
         super.didMove(to: view)
         if let someBird:SKSpriteNode = self.childNode(withName: "BlueBird") as? SKSpriteNode{
@@ -82,10 +84,41 @@ class GameScene: SKScene {
             loseTag.text = "You've lost the game!"
             loseTag.fontSize = 60
         }
+        /*
+        let backgroundMusicEffect = SKAction.playSoundFileNamed("woohoo.mp3", waitForCompletion: true)
+        soundIsPlaying = false
+        if soundIsPlaying == false {
+            run(SKAction.repeatForever(backgroundMusicEffect), withKey: "backgroundMusic")
+           soundIsPlaying = true
+        }
+ */
         
+        let backgroundSound = SKAudioNode(fileNamed: "bg.wav")
+        
+        
+        backgroundSound.run(SKAction.changeVolume(to: 0.2, duration: 0))
+        
+            self.addChild(backgroundSound)
+        backgroundSound.run(SKAction.play())
+        
+        backgroundSound.run(SKAction.changeVolume(to: 0.2, duration: 0))
+        
+        /*
+        for wall in wallAssetArray {
+            wall.color = UIColor(patternImage: UIImage(named: "wallTextureA")!)
+            wall.alpha = 1
+           // wall.isHidden = true
+           // wall.isHidden = false
+        }
+        */
+        
+        self.backgroundColor = UIColor(patternImage: UIImage(named: "wallTextureA")!)
+        self.alpha = 0.9
+        /*
         if let awn:SKAudioNode = self.childNode(withName: "audioWinNode") as? SKAudioNode {
             self.audioWinNode = awn
         }
+        */
     }
     
     func resetGame() {
@@ -100,6 +133,8 @@ class GameScene: SKScene {
         self.theCoin.isHidden = false
         self.winTag.isHidden = true
         self.loseTag.isHidden = true
+        
+        self.inPostGame = false
       
     }
     
@@ -126,26 +161,57 @@ class GameScene: SKScene {
       // player.play()
         
         //self.audioWinNode = SKSpriteNode(named: "audioWinNode")!
-        if (didPlayAudio) {
+        if (self.didPlayAudio) {
             return
         }
         
         print("PLAYING")
-      //  let pling = SKAudioNode(fileNamed: "woohoo.mp3")
+      
            // this is important (or else the scene starts to play the sound in
            // an infinite loop right after adding the node to the scene).
-           audioWinNode.autoplayLooped = false
+         
         //audioWinNode.addChild(pling)
-        audioWinNode.run(SKAction.sequence([
-            SKAction.wait(forDuration: 3),
+        
+        if let fxURL = Bundle.main.url(forResource: "yay", withExtension: "wav") {
+            self.audioWinNode = SKAudioNode(url: fxURL)
+            self.audioWinNode.isPositional = false
+            self.audioWinNode.position = self.view?.center ?? CGPoint(x:0,y:0)
+            self.audioWinNode.autoplayLooped = false
+            self.addChild(self.audioWinNode)
+            self.audioWinNode.autoplayLooped = false
+            
+        } else {
+            print("BAD URL")
+        }
+        
+        
+        
+        self.audioWinNode.run(SKAction.play())
+        self.audioWinNode.run(SKAction.sequence([
+            
             SKAction.run {
-                   // this will start playing the pling once.
-                self.audioWinNode.run(SKAction.play())
-                print("PLAYED IT")
-                self.didPlayAudio = false
-               }
+                  
+                //self.audioWinNode.run(SKAction.play())
+                print("Playing..")
+                self.didPlayAudio = true
+                
+                //self.audioWinNode.run(SKAction.play())
+                
+                
+               
+            
+            }, SKAction.wait(forDuration: 6),
+            
+            SKAction.run {
+                
+             
+             print("PLAYED IT")
+             self.didPlayAudio = false
+                self.audioWinNode.run(SKAction.stop())
+         }
            ]))
-        self.didPlayAudio = true
+        
+        
     }
     
     func gameWon() {
@@ -157,43 +223,70 @@ class GameScene: SKScene {
         winTag.isHidden = false
         
         theBird.run(hitAnimation)
-        self.playGameWonAudio()
+        
+        if (!self.didPlayAudio) {
+            self.playGameWonAudio()
+        }
+        
         theBird.run(wait, completion: {
             self.resetGame()
+            
         })
        // resetGame()
     }
     
+    var inPostGame : Bool = false
     
     override func update(_ currentTime: TimeInterval) {
         // Called before each frame is rendered
-        
-        if (self.checkCollisions(objA: theBird, objB: theCoin)){
-           
-            self.gameWon()
-            
-           
-        }
-        for wall in wallAssetArray{
-            if (self.checkCollisions(objA: theBird, objB: wall)){
-                let loseBird : SKAction = SKAction(named: "loseBird")!
-                loseTag.isHidden = false
-                theBird.run(loseBird)
-                let wait:SKAction = SKAction.wait(forDuration: 1)
-                theBird.run(wait, completion: {
-                    self.resetGame()
-                })
+        if (!self.inPostGame) {
+            if (self.checkCollisions(objA: theBird, objB: theCoin)){
+                self.inPostGame = true
+                self.gameWon()
             }
-        }
-        
-        if (!self.didLoad) {
             
-            self.birdInitX = self.theBird.frame.origin.x
-            self.birdInitY = self.theBird.frame.origin.y
-            self.coinInitX = self.theCoin.frame.origin.x
-            self.coinInitY = self.theCoin.frame.origin.y
             
-            self.didLoad = true
+            for wall in wallAssetArray{
+                
+            
+                
+                if (self.checkCollisions(objA: theBird, objB: wall)){
+                    
+                    self.inPostGame = true
+                    
+                    let loseBird : SKAction = SKAction(named: "loseBird")!
+                    loseTag.isHidden = false
+                    theBird.run(loseBird)
+                    
+                    let oof = SKAudioNode(fileNamed: "oofshort.wav")
+                    
+                    
+                        self.addChild(oof)
+                    oof.run(SKAction.play())
+                    
+                 
+                    
+                    let wait:SKAction = SKAction.wait(forDuration: 1)
+                    
+                    
+                    theBird.run(wait, completion: {
+                        self.resetGame()
+                        oof.run(SKAction.stop())
+                        self.inPostGame = false
+                        
+                    })
+                }
+            }
+            
+            if (!self.didLoad) {
+                
+                self.birdInitX = self.theBird.frame.origin.x
+                self.birdInitY = self.theBird.frame.origin.y
+                self.coinInitX = self.theCoin.frame.origin.x
+                self.coinInitY = self.theCoin.frame.origin.y
+                
+                self.didLoad = true
+            }
         }
         
     }
@@ -258,5 +351,5 @@ class GameScene: SKScene {
         for t in touches { self.touchUp(atPoint: t.location(in: self)) }
     }
     
-    
+ 
 }
