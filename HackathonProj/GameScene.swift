@@ -8,6 +8,7 @@
 import SpriteKit
 import GameplayKit
 
+
 class GameScene: SKScene {
     
     var theBird : SKSpriteNode = SKSpriteNode()
@@ -23,12 +24,15 @@ class GameScene: SKScene {
     var wall7 : SKSpriteNode = SKSpriteNode()
     var wallAssetArray : [SKSpriteNode] = []
     
+    var audioWinNode = SKAudioNode()
+    
     var birdInitX : CGFloat = 0
     var birdInitY : CGFloat = 0
     var coinInitX : CGFloat = 0
     var coinInitY : CGFloat = 0
     
     var didLoad : Bool = false
+    var didPlayAudio : Bool = false
     
     override func didMove(to view: SKView) {
         super.didMove(to: view)
@@ -78,6 +82,10 @@ class GameScene: SKScene {
             loseTag.text = "You've lost the game!"
             loseTag.fontSize = 60
         }
+        
+        if let awn:SKAudioNode = self.childNode(withName: "audioWinNode") as? SKAudioNode {
+            self.audioWinNode = awn
+        }
     }
     
     func resetGame() {
@@ -102,22 +110,69 @@ class GameScene: SKScene {
         return false
     }
     
+
+
+    func playSound(sound : SKAction)
+    {
+       
+    }
+    
+    func playGameWonAudio() {
+        //run(SKAction.playSoundFileNamed("woohoo.mp3", waitForCompletion: false))
+        //print("AUDIO PLAYED")
+      // let url = Bundle.main.url(forResource: "woohoo", withExtension: "mp3")!
+      //  let player = AVAudioPlayer(contentsOf: url)
+        
+      // player.play()
+        
+        //self.audioWinNode = SKSpriteNode(named: "audioWinNode")!
+        if (didPlayAudio) {
+            return
+        }
+        
+        print("PLAYING")
+      //  let pling = SKAudioNode(fileNamed: "woohoo.mp3")
+           // this is important (or else the scene starts to play the sound in
+           // an infinite loop right after adding the node to the scene).
+           audioWinNode.autoplayLooped = false
+        //audioWinNode.addChild(pling)
+        audioWinNode.run(SKAction.sequence([
+            SKAction.wait(forDuration: 3),
+            SKAction.run {
+                   // this will start playing the pling once.
+                self.audioWinNode.run(SKAction.play())
+                print("PLAYED IT")
+                self.didPlayAudio = false
+               }
+           ]))
+        self.didPlayAudio = true
+    }
+    
+    func gameWon() {
+        
+        let hitAnimation : SKAction = SKAction(named: "HitBird")!
+        let wait:SKAction = SKAction.wait(forDuration: 3)
+       // let sequence : SKAction = SKAction.sequence ([hitAnimation, self.resetGame()])
+        theCoin.isHidden = true
+        winTag.isHidden = false
+        
+        theBird.run(hitAnimation)
+        self.playGameWonAudio()
+        theBird.run(wait, completion: {
+            self.resetGame()
+        })
+       // resetGame()
+    }
     
     
     override func update(_ currentTime: TimeInterval) {
         // Called before each frame is rendered
         
         if (self.checkCollisions(objA: theBird, objB: theCoin)){
-            let hitAnimation : SKAction = SKAction(named: "HitBird")!
-            let wait:SKAction = SKAction.wait(forDuration: 3)
-           // let sequence : SKAction = SKAction.sequence ([hitAnimation, self.resetGame()])
-            theCoin.isHidden = true
-            winTag.isHidden = false
-            theBird.run(hitAnimation)
-            theBird.run(wait, completion: {
-                self.resetGame()
-            })
-           // resetGame()
+           
+            self.gameWon()
+            
+           
         }
         for wall in wallAssetArray{
             if (self.checkCollisions(objA: theBird, objB: wall)){
